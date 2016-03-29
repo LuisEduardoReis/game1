@@ -15,7 +15,7 @@ function init() {
 
 	$("#loading").remove();
 		
-	canvas = document.createElement("canvas");
+	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
 	
 	$("#content").append(canvas);
@@ -31,9 +31,9 @@ function init() {
 	ctx.fillStyle = "rgb(255,255,255)";
 	ctx.fillRect(0,0,V_WIDTH, V_HEIGHT);
 	
-	ctx.drawImage(IMAGES['test.png'],Player.x-16,Player.y-16);
+	ctx.drawImage(testImg,Player.x-16,Player.y-16);
 	
 }
 
-
-load(init);
+loader.addCompletionListener(init);
+loader.start();

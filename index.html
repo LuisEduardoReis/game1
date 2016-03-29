@@ -9,13 +9,21 @@
 <body>
 	<div id="content">
 		<div id="loading"><h3>Loading...</h3></div>
+		<canvas id="canvas" width="0" height="0">
+			Your browser does not support Canvas :(
+		</canvas>
 	</div>
 	
 	<div id="info">
 		<h3> Game_1</h3>
 	</div>
 	
-	<script src="jquery-1.11.3.min.js"></script>
+	<!-- lib -->
+	<script src="lib/jquery-1.11.3.min.js"></script>
+	<script src="lib/PxLoader.js"></script>
+	<script src="lib/PxLoaderImage.js"></script>
+	
+	<!-- code -->
 	<script src="load.js"></script>
 	<script src="input.js"></script>
 	<script src="main.js"></script>
