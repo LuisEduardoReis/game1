@@ -1,0 +1,14 @@
+body {
+	color: #ffffff;
+	background-color: #000040;	
+}
+
+#content, #info{
+	width:100%;
+	text-align:center;
+}
+
+canvas {
+	display: inline;	
+	-ms-interpolation-mode: nearest-neighbor;
+}
