@@ -2,6 +2,12 @@
 
 function Game() {
 
+	var player;
+	var stars = [];
+	var star_speed = 128;
+
+	var entities = [];
+	
 	this.init = function() {
 		$("#loading").remove();
 		
@@ -11,55 +17,77 @@ function Game() {
 	
 		$("#content").append(canvas);
 
-		canvas.width = WIDTH;
-		canvas.height = HEIGHT;
+		canvas.width = width;
+		canvas.height = height;
 		
 		return true;
 	}
 	
 	this.start = function() {
-		Player.x = WIDTH / 2;
-		Player.y = HEIGHT / 2;			
+	
+		entities.push(new Player(width / 2, height - 64));
 		
 		for(var i = 0; i < 100; i++) {
-			stars[3*i+0] = Math.random()*WIDTH;
-			stars[3*i+1] = Math.random()*HEIGHT;
+			stars[3*i+0] = Math.random()*width;
+			stars[3*i+1] = Math.random()*height;
 			stars[3*i+2] = Math.random();
 		}
 	
 		animate();
 	}
 	
-	var last;
+	var last = -1;
 	function animate(timestamp) {
 		requestAnimFrame(animate);
 		if (last > 0 && timestamp > 0) {
-			render((timestamp - last)/1000);
+			var delta = (timestamp - last)/1000;
+			if (delta > 0.5) delta = 0.5;
+			render(delta);
 		}
 		last = timestamp;
 	}
 	
+	var enemy_timer = 0;
+	var enemy_delay = 1;
 	function render(delta) {
-		ctx.fillStyle = "rgb(0,0,0)";
-		ctx.fillRect(0,0,WIDTH, HEIGHT);
 		
-		if (keysDown[38]) Player.y -= Player.speed * delta;
-		if (keysDown[40]) Player.y += Player.speed * delta;
-		if (keysDown[37]) Player.x -= Player.speed * delta;
-		if (keysDown[39]) Player.x += Player.speed * delta;
-		
-		Player.x = Math.min(Math.max(16, Player.x), WIDTH-16);
-		Player.y = Math.min(Math.max(16, Player.y), HEIGHT-16);
-	
-		//Stars
-		for(var i = 0; i < 100; i++){
-			stars[3*i+1] += 128*delta*(1+2*stars[3*i+2]);
-			stars[3*i+1] = stars[3*i+1] % HEIGHT;
+		// Update
+			// Entities
+			for(var i = 0; i < entities.length; i++) {
+				entities[i].update(delta);
+			}
 			
-			spritesheet32.draw(0,0, stars[3*i],stars[3*i+1]);
-		}
+			// Create Enemies
+			enemy_timer += delta;
+			while (enemy_timer > enemy_delay) {
+				entities.push(new Enemy(32+Math.random()*(width-64), -64));
+				enemy_timer -= enemy_delay;
+			}
 		
-		ctx.drawImage(testImg,Player.x-16,Player.y-16);
+		// Render
+			// Background
+			ctx.fillStyle = "rgb(0,0,0)";
+			ctx.fillRect(0,0,width, height);
+			
+			//Stars
+			for(var i = 0; i < 100; i++){
+				stars[3*i+1] += star_speed*delta*(1+2*stars[3*i+2]);
+				stars[3*i+1] = stars[3*i+1] % height;
+				
+				spritesheet32.render(0,0, Math.round(stars[3*i]),Math.round(stars[3*i+1]));
+			}
+			
+			// Entities
+			for(var i = 0; i < entities.length; i++) {
+				entities[i].render();
+			}
+			
+			
+		// Remove
+		for(var i = 0; i < entities.length; i++) {
+			if (entities[i].destroy) entities.splice(i,1);
+		}
+			
 	}
 	
 	
