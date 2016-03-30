@@ -11,6 +11,8 @@ function Game() {
 	
 	this.enemy_timer = 0;
 	this.enemy_delay = 1;
+	
+	this.t = 0;
 }
 	
 Game.prototype.init = function() {
@@ -18,7 +20,13 @@ Game.prototype.init = function() {
 	
 	canvas = document.getElementById("canvas");
 	if (!canvas.getContext) return false;
-	ctx = canvas.getContext("2d");		
+	ctx = canvas.getContext("2d");	
+
+	ctx.rotateFromCenter = function(angle,x,y) {
+		this.translate(x,y);
+		this.rotate(angle);		
+		this.translate(-x,-y);
+	}
 
 	$("#content").append(canvas);
 
@@ -33,8 +41,8 @@ Game.prototype.start = function() {
 	this.entities.push(new Player(this, width / 2, height - 64));
 	
 	for(var i = 0; i < 100; i++) {
-		this.stars[3*i+0] = Math.random()*width;
-		this.stars[3*i+1] = Math.random()*height;
+		this.stars[3*i+0] = (2*Math.random()-0.5)*width;
+		this.stars[3*i+1] = (2*Math.random()-0.5)*height;
 		this.stars[3*i+2] = Math.random();
 	}
 
@@ -55,6 +63,8 @@ Game.prototype.animate = function(timestamp) {
 Game.prototype.render = function (delta) {
 		
 	// Update
+		this.t += delta;
+	
 		// Entities
 		for(var i = 0; i < this.entities.length; i++) {
 			this.entities[i].update(delta);
@@ -90,6 +100,9 @@ Game.prototype.render = function (delta) {
 		ctx.fillStyle = "rgb(0,0,0)";
 		ctx.fillRect(0,0,width, height);
 		
+		ctx.rotateFromCenter(this.t/10,width/2,height/2);
+		
+		
 		//Stars
 		for(var i = 0; i < 100; i++){
 			this.stars[3*i+1] += this.star_speed*delta*(1+2*this.stars[3*i+2]);
@@ -103,6 +116,8 @@ Game.prototype.render = function (delta) {
 			this.entities[i].render();
 		}
 		
+		ctx.rotateFromCenter(-this.t/10,width/2,height/2);
+
 		
 	// Remove
 		for(var i = 0; i < this.entities.length; i++) {

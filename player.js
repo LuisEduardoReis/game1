@@ -1,6 +1,7 @@
 function Player(game, x,y) {
 	var size = 32;
 	Entity.call(this, game, x,y, size,size);
+	this.type = Player;
 	
 	this.speed = 512;
 	
@@ -31,3 +32,4 @@ function Player(game, x,y) {
 }
 Player.prototype = Object.create(Entity.prototype);
 Player.prototype.constructor = Player;
+Player.prototype.isType = function(type)  { return type === "Player" || Entity.prototype.isType.call(this,type);}

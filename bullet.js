@@ -7,6 +7,7 @@ function Bullet(game, x,y) {
 }
 Bullet.prototype = Object.create(Entity.prototype);
 Bullet.prototype.constructor = Bullet;
+Bullet.prototype.isType = function(type) { return type === "Bullet" || Entity.prototype.isType.call(this,type);};
 
 Bullet.prototype.update = function(delta) {
 	Entity.prototype.update.call(this, delta);
