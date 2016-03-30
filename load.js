@@ -18,10 +18,10 @@ function SpriteSheet(_img, _size) {
 		ctx.drawImage(this.img,
 			ix*this.size, iy*this.size,
 			this.size, this.size,
-			x,y,
+			Math.round(x),Math.round(y),
 			this.size, this.size
 		);
 	}	
 }
 
-var spritesheet32 = new SpriteSheet(spritesheetImg, 16);
+var spritesheet16 = new SpriteSheet(spritesheetImg, 16);
