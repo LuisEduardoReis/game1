@@ -1,14 +1,4 @@
 
-var WIDTH = 640;
-var HEIGHT = 480;
-
-var canvas, ctx;
-
-var Player = {
-	speed: 512,
-	x: 0,
-	y: 0
-}
 
 function Game() {
 
@@ -30,6 +20,12 @@ function Game() {
 	this.start = function() {
 		Player.x = WIDTH / 2;
 		Player.y = HEIGHT / 2;			
+		
+		for(var i = 0; i < 100; i++) {
+			stars[3*i+0] = Math.random()*WIDTH;
+			stars[3*i+1] = Math.random()*HEIGHT;
+			stars[3*i+2] = Math.random();
+		}
 	
 		animate();
 	}
@@ -44,7 +40,7 @@ function Game() {
 	}
 	
 	function render(delta) {
-		ctx.fillStyle = "rgb(255,255,255)";
+		ctx.fillStyle = "rgb(0,0,0)";
 		ctx.fillRect(0,0,WIDTH, HEIGHT);
 		
 		if (keysDown[38]) Player.y -= Player.speed * delta;
@@ -55,6 +51,14 @@ function Game() {
 		Player.x = Math.min(Math.max(16, Player.x), WIDTH-16);
 		Player.y = Math.min(Math.max(16, Player.y), HEIGHT-16);
 	
+		//Stars
+		for(var i = 0; i < 100; i++){
+			stars[3*i+1] += 128*delta*(1+2*stars[3*i+2]);
+			stars[3*i+1] = stars[3*i+1] % HEIGHT;
+			
+			spritesheet32.draw(0,0, stars[3*i],stars[3*i+1]);
+		}
+		
 		ctx.drawImage(testImg,Player.x-16,Player.y-16);
 	}
 	
